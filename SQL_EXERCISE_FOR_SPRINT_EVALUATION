@@ -1,0 +1,173 @@
+2.1 Select statements
+2.1.1 Write a query to display employee id, employee name, department id, department name of all employees who has a department assigned?
+Answer– 
+select e.employee_id, e.emp_name, e.dept_id, d.dept_name 
+from employee e join department d 
+where e.dept_id=d.dept_id;
+2.1.2 Write query to display employee name with monthly salary?
+Answer-
+select emp_name, salary/12 from employee;
+
+
+
+2.2 Where condition
+2.2.1. Write a query to display employee details with salary less than 5 lakhs?
+Answer- select * from employee where salary < 500000;
+2.2.2 Write a query to display the employee id, employee name of the employees who joined before 2015?
+Answer- 
+select employee_id,emp_name
+ from employee where joining_date<('2015-1-1');
+
+2.2.3 Write a query to display the employee name, salary and manager I	D, for those employees whose managers hold the ID 100, 120, 145, 149?
+Answer- select emp_name,salary,manager_id 
+from employee where manager_id in (100, 120, 145, 149);
+
+2.2.4 Write a query to display all employee names to begin with ‘R’?
+Answer-
+ select emp_name from employee where emp_name like 'R%';
+
+2.2.5 Write an SQL query to fetch the list of employees with the same salary?
+Answer-
+select distinct  e.emp_name,e.salary from employee e,employee t where e.emp_name!=t.emp_name and e.salary=t.salary;
+
+2.2.6 Write a query to retrieve all the employees who are working in Finance, Manufacturing, and Construction departments?
+Answer- 
+select e.employee_id,e.emp_name from employee e,department d where e.dept_id=d.dept_id and d.dept_name in ('finance','manufacuring','construction');
+
+desc table employee;
+
+
+
+2.3 Group By, Order By and Having Conditions
+2.3.1 Write a query to display number of employees in each department and group by department?
+Answer-
+select d.dept_name, count(d.dept_name)as number_of_emp from department d left join employee e on
+e.dept_id = d.dept_id group by d.dept_name;
+2.3.2. Write query to fetch employee name, department number of all employees in departments 20 or 50 in ascending alphabetical and order by name?
+Answer- 
+select emp_name,dept_id from employee where dept_id in (112,111) order by emp_name asc;
+2.3.3. Write a query to Display the employee name, department number, and department name for each employee order by employee name?
+Answer-
+select e.emp_name,e.dept_id,d.dept_name 
+from employee e,department d 
+where e.dept_id= d.dept_id order by e.emp_name;
+
+2.3.4. Write a query to get the employee name, department id, years of experience for unmarried employees group by experience and order by department id?
+Answer-
+select ee.emp_name, x.dept_id,x.exp 
+from employee ee 
+left join (SELECT  dept_id,DATEDIFF(year,joining_date,CURRENT_DATE()) AS exp from employee where martial_stat = true  group by exp ,dept_id) x
+on x.dept_id=ee.dept_id;
+
+
+
+2.4 Joins
+2.4.1 Write a query to get employee name, employee id, department name who belongs to state ANDHRA PRADESH use left join?
+Answer-
+select  e.emp_name,e.employee_id,d.dept_name 
+from employee e 
+left join department d 
+on e.dept_id=d.dept_id 
+where e.dept_id 
+in (select d.dept_id from department d left join location l on d.loc_id=l.loc_id where l.state ='up');
+
+2.4.2 Write query to find employee name, salary and job title for all employees use right join?
+Answer-
+select e.emp_name, e.salary,j.job_tital 
+from jobs j 
+right join employee e 
+on j.job_id = e.job_id;
+
+2.4.3 Write a query to get number of employees with same job title use inner join?
+Answer-
+select j.job_tital , count(*) 
+from employee e 
+inner join jobs j on e.job_id =j.job_id group by j.job_tital;
+
+2.4.4 Write q query to get employee name, department name, state who are unmarried use full join?
+Answer-
+select e.emp_name 
+from employee e,department d,location l
+where e.dept_id=d.dept_id and d.loc_id=l.loc_id and e.martial_stat=false;
+
+
+2.5 Aggregations
+2.5.1 Write a query to get difference between highest and lowest salaries and label the column difference?
+Answer-
+select ((select max(salary) from employee)-(select min(salary) from employee)) as Difference ;
+
+2.5.2 Write a query to display employees who earn more than the average salary and who work in the IT department?
+Answer-
+select e.emp_name 
+from employee e,department d 
+where salary > (select avg(salary) from employee) and d.dept_id=e.dept_id and d.dept_name = 'it';
+
+2.5.3 Write a query to display what is the average, maximum and minimum salary for each department?
+Answer-
+select d.dept_id,avg(salary),min(salary),max(salary) 
+from employee e , department d 
+where e.dept_id=d.dept_id 
+group by d.dept_id;
+
+
+
+2.6 SQL Functions
+2.6.1 Write an SQL query to print the first three characters of EMPLOYEE NAME?
+Answer-	select substr(emp_name,1,3) from employee;
+
+2.6.2 Write a query to print employee name ends with ‘h’ and contains six alphabets?
+Answer-
+select emp_name 
+from employee where emp_name like '_____h';
+
+2.6.3 Write a query to get age from date of birth in employee table?
+Answer-
+select emp_name,datediff(YEAR,dob,current_date()) as age 
+from employee;
+
+2.6.4 Write a query to convert employee into lower case and find the length of the employee name?
+Answer-
+SELECT LOWER(EMP_NAME),length(EMP_NAME) FROM EMPLOYEE;
+
+2.6.5 Write a query to add current date as date to the employee table?
+Answer- 
+ALTER TABLE EMPLOYEE ADD CURRENT_DATE DATE;
+
+2.6.6 Write a query to convert decimal type to integer for salary column in employee table?
+Answer- SELECT ABS(SALARY) FROM EMPLOYEE;
+
+2.6.7 Write a query to format joining date to format YYYY-MM-DD ?
+Answer-
+select to_char(joining_dt,'yyyy-mm-dd') as formatted_date from employee;
+
+
+
+2.7 Index and view
+2.7.1 Write a query to create a view that shows employee name, phone number, Manager id from employees table who are from city = Bangalore?
+Answer-
+CREATE VIEW NEW_VIEW 
+AS SELECT * FROM EMPLOYEE 
+WHERE EMPLOYEE_ID = 2;
+SELECT * FROM NEW_VIEW ;
+
+2.7.2 Write a query to create an index on employee table with employee name, DOB and martial status?
+Answer- 
+CREATE  INDEX MY_INDEX
+ON EMPLOYEE (EMP_NMAE, DOB,MARITAL_STAT);
+2.8 Sub Queries
+2.8.1 Write a query to fetch all the employee details who do not have location Id 2546?
+Answer-
+select * 
+from employee e ,(select l.loc_id,d.dept_id  from department d,location l where l.loc_id !=2546 and d.loc_id = l.loc_id) x
+where e.dept_id=x.dept_id;
+
+2.8.2 Write a query to fetch employee details whose salaries are greater than the average salary of all the employees?
+Answer-
+		select * from employee 
+where salary> (SELECT avg(salary) from employee);
+
+2.8.3 Write a query to find all the departments do not have any employee with salary greater than 2.5 lakhs?
+Answer- 
+select distinct d.dept_name 
+from (select * from employee where salary < 250000) e, department d
+where e.dept_id = d.dept_id;
